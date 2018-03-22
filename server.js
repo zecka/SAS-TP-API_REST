@@ -3,6 +3,10 @@ const express = require("express"); // Module JS permettant de créer des endpoi
 const bodyParser = require("body-parser"); // Module JS permettant de tranformer les paramètres en JSON
 const auth = require("./auth"); // Module permettant de gérer l'authentification par secret partagé pour notre API REST
 
+const mongoose = require("mongoose"); // Module permettant de se connecter a une base de donnée mongoDB
+mongoose.connect("mongodb://localhost/bdwa"); // crée une connection avec la base de donnée bdwa sur le serveur mongoDB en local
+const db = mongoose.connection; // initialise une variable db avec la connection a la BDD sur mongoDB
+
 /*
   Paramètrage d'Express. Pas besoin de toucher.
   ------------------------------------------------
