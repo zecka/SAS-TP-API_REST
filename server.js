@@ -63,8 +63,6 @@ const data = {
 };
 
 
-
-
 /*
   Déclaration des endpoints (également appelés *routes*)
 
