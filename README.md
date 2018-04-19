@@ -66,10 +66,24 @@ nous avons 2 terminal ouvert:
 
 Nous pouvons donc ouvrir une 3eme fenêtre de terminal pour executer nos requête curl
 
-* `curl localhost:8080/?index=0 -H 'secret: 7cTcjNyVJyudBqfE` pour afficher l'élément à l'index 0
-* `curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Super titre3", "content": "super contenu3"}' -H 'secret: 7cTcjNyVJyudBqfE'` pour Ajouter un nouvel élément
-* `curl -X DELETE localhost:8080/4 -H 'secret: 7cTcjNyVJyudBqfE'` pour supprimer l'élément à l'index 4
-* `curl -X PUT -H "Content-Type: application/json" localhost:8080/?index=0 -d '{"newTitle":"Mon nouveau titre", "newContent": "mon nouveau contenu"}' -H 'secret: 7cTcjNyVJyudBqfE` pour  mettre à jour l'élément à l'index 0
+
+Pour afficher l'élément à l'index 0
+```bash
+curl localhost:8080/?index=0 -H 'secret: 7cTcjNyVJyudBqfE'
+```
+pour Ajouter un nouvel élément
+```bash
+curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Super titre3", "content": "super contenu3"}' -H 'secret: 7cTcjNyVJyudBqfE'
+```
+pour supprimer l'élément à l'index 4
+```bash
+curl -X DELETE localhost:8080/4 -H 'secret: 7cTcjNyVJyudBqfE'
+```
+
+pour  mettre à jour l'élément à l'index 0
+```bash
+curl -X PUT -H "Content-Type: application/json" localhost:8080/?index=0 -d '{"newTitle":"Mon nouveau titre", "newContent": "mon nouveau contenu"}' -H 'secret: 7cTcjNyVJyudBqfE'
+```
 
 Dans le terminal docker mongo ont peux afficher les éléments dans entré dans la base de donnée
 
