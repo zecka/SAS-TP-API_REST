@@ -6,8 +6,8 @@
 
 # Lancement
 
-Lancer le serveur avec `node server.js`.
-Il est nécessaire de l'arrêter (CTRL+C) et de le relancer à chaque modification.
+Lancer le serveur avec `node server.js`.<br>
+Il est nécessaire de l'arrêter (CTRL+C) et de le relancer à chaque modification.<br>
 
 Pour que le serveur se relance tout seul à chaque modification, vous pouvez utiliser `nodemon`:
 
@@ -18,13 +18,13 @@ npm run dev
 
 # Exemples
 
-Le fichier [javascript.js](javascript.js) réuni un ensemble d'exemples pour comprendre le fonctionnement de base de javascript.
+Le fichier [javascript.js](javascript.js) réuni un ensemble d'exemples pour comprendre le fonctionnement de base de javascript.<br>
 Il est possible de l'exécuter avec la commande `node javascript.js`.
 
 # Modules
 
-Dans ce dépôt, vous trouverez 2 modules supplémentaires qui seront éventuellement plus tard.
-Vous n'en avez pas besoin pour commencer l'exercice.
+Dans ce dépôt, vous trouverez 2 modules supplémentaires qui seront éventuellement plus tard.<br>
+Vous n'en avez pas besoin pour commencer l'exercice.<br>
 
 * `auth.js` pour gérer l'authentification sur les endpoints
 * `mongo.js` pour gérer les accès à une base de données MongoDB
@@ -51,20 +51,20 @@ docker container start <nom-du-container>
 docker exec-it <nom-du-container> mongo
 ```
 
-Une fois que le container est actif il faut lancer le serveur node.js relié a mongo
-Ouvrir une nouvelle fenêtre de terminal et executer la commande suivante
+Une fois que le container est actif il faut lancer le serveur node.js relié a mongo<br>
+Ouvrir une nouvelle fenêtre de terminal et executer la commande suivante<br>
 (mongo à été ajouté a package.json)
 ```bash
 npm run mongo
 ```
 
-A ce stade nous pouvons Afficher, ajouter, supprimer, modifier des élément de la base de données mongo
-nous avons 2 terminal ouvert:
+A ce stade nous avons 2 terminal ouvert:
 
 * le terminal node.js
 * le terminal docker mongo
 
-Nous pouvons donc ouvrir une 3eme fenêtre de terminal pour executer nos requête curl
+Nous pouvons donc ouvrir une 3eme fenêtre de terminal pour executer nos requête curl <br>
+Nous pouvons Afficher, ajouter, supprimer, modifier des élément de la base de données mongo
 
 
 Pour afficher l'élément à l'index 0
@@ -73,7 +73,7 @@ curl localhost:8080/?index=0 -H 'secret: 7cTcjNyVJyudBqfE'
 ```
 pour Ajouter un nouvel élément
 ```bash
-curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Super titre3", "content": "super contenu3"}' -H 'secret: 7cTcjNyVJyudBqfE'
+curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Un titre", "content": "Un contenu"}' -H 'secret: 7cTcjNyVJyudBqfE'
 ```
 pour supprimer l'élément à l'index 4
 ```bash

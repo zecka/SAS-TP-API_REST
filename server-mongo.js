@@ -87,7 +87,15 @@ app.post("/", (req, res) => {
 		content: paramsPost.content,
 	};
 	
-	mongo.add( nouvelArticle, (isOkay) => { console.log(isOkay ? 'Ajouté !' : 'Erreur !') })
+	mongo.add( nouvelArticle, (isOkay) => {
+		if(isOkay){
+			console.log('ajouté');
+			res.send('Ajouté ! \n')
+		}else{
+			console.log('erreur');
+			res.send('Erreur ! \n')
+		}
+	})
 
 });
 
@@ -100,8 +108,15 @@ app.delete("/:number", (req, res) => {
 	console.log({ paramsURL });
 	// Supprimer un élément d'un tableau
 
-	mongo.remove(parseInt(paramsURL.number), (isOkay) => { console.log(isOkay ? 'Supprimé !': 'Erreur !')});
-
+	mongo.remove(parseInt(paramsURL.number), (isOkay) => { 
+		if(isOkay){
+			console.log('supprimé');
+			res.send('Supprimé ! \n')
+		}else{
+			console.log('erreur');
+			res.send('Erreur ! \n')
+		}
+	});
 	
 	res.json(paramsURL);
 });
@@ -128,7 +143,15 @@ app.put("/", (req, res) => {
 		content: paramsPost.newContent,
 	};
 	
-	mongo.update(paramsGet.index, updateItem, (isOkay) => { console.log(isOkay ? 'Mis à jour !': 'Erreur !')});
+	mongo.update(paramsGet.index, updateItem, (isOkay) => { 
+		if(isOkay){
+			console.log('mis à jour');
+			res.send('Mis à jour ! \n')
+		}else{
+			console.log('erreur');
+			res.send('Erreur ! \n')
+		}
+	});
 
 	res.json(paramsPost);
 
