@@ -85,7 +85,7 @@ pour  mettre à jour l'élément à l'index 0
 curl -X PUT -H "Content-Type: application/json" localhost:8080/?index=0 -d '{"newTitle":"Mon nouveau titre", "newContent": "mon nouveau contenu"}' -H 'secret: 7cTcjNyVJyudBqfE'
 ```
 
-Dans le terminal docker mongo ont peux afficher les éléments dans entré dans la base de donnée
+Dans le terminal docker mongo on peux afficher les éléments dans entré dans la base de donnée
 
 * `use bdwa` pour se mettre sur la base de donnée
 * `db.items.find()` pour afficher les éléments contenu dans la collections items
