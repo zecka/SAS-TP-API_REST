@@ -22,8 +22,9 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 
 db.once("open", () => {
-  console.log("Vous êtes bien connecté à MongoDB");
+  console.log("Vous êtes bien connecté à MongoDB !");
 });
+
 
 // Définition du modèle Item
 const itemSchema = mongoose.Schema({
@@ -72,7 +73,7 @@ const remove = (index, callback) => {
     });
   });
 };
-
+/*
 const update = (index, item, callback) => {
   get(index, item => {
     if (!item) return callback();
@@ -84,6 +85,33 @@ const update = (index, item, callback) => {
     });
   });
 };
+*/
+
+const update = (index, updateItem, callback) => {
+  get(index, item => {
+    if (!item) return callback();
+    
+    Item.remove({ _id: item._id }, err => {
+      if (err) {
+        console.log(`ERREUR: ${err}`);
+        return callback(false);
+      } else {
+	    //add(item);
+	    const newItem = new Item(updateItem);
+	    newItem.save((err, res) => {
+			if (err) {
+				console.log(`ERREUR: ${err}`);
+				return callback({});
+			} else {
+				return callback(res);
+			}
+		});
+        return callback(true);
+      }
+    });
+    
+  });
+};
 
 module.exports = {
   get,
@@ -91,3 +119,4 @@ module.exports = {
   update,
   remove,
 };
+

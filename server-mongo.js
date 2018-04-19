@@ -1,12 +1,23 @@
-// POUR LANCER LE SERVER NODE JS
-// Depuis le terminal aller sur le dossier qui contient le fichier server.js
-// puis executer la commande ci dessous¨
-// node server.js
+/*
+	LANCER DOCKER
+	
+	Pour créer le conteneur:
+	docker run -d --name test-mongo -p 27017:27017 mongo
+	docker exec -it test-mongo mongo
+	
+	Si le conteneur est déja créer mais pas starter
+	docker container start <nom-du-container>
+	docker exec-it <nom-du-container> mongo
+*/
 
 // Importation des modules externes
 const express = require("express"); // Module JS permettant de créer des endpoints HTTP facilement
 const bodyParser = require("body-parser"); // Module JS permettant de tranformer les paramètres en JSON
 const auth = require("./auth"); // Module permettant de gérer l'authentification par secret partagé pour notre API REST
+
+const mongo = require("./mongo");
+
+// mongo.remove(1, (isOkay) => { console.log(isOkay ? 'Supprimé !': 'Erreur !')});
 
 /*
   Paramètrage d'Express. Pas besoin de toucher.
@@ -38,30 +49,6 @@ app.use(auth)
   ------------------------------------------------
 */
 
-/*
-  Déclaration des données
-*/
-const data = {
-  items: [
-    {
-      title: "Je suis un titre",
-      content: "Je suis un contenu",
-    },
-    {
-      title: "Je suis un paf",
-      content: "Je suis un contenu",
-    },
-    {
-      title: "Je suis un gros PAFFF",
-      content: "Je suis un contenu",
-    },
-    {
-      title: "Je suis un PAAAAFFF de oufff",
-      content: "Je suis un contenu",
-    },
-  ],
-};
-
 
 
 
@@ -80,54 +67,40 @@ const data = {
 // Lorsqu'on reçoit une requête GET
 // Exemple: curl localhost:8080/?index=3
 // TODO: Retourner l'item correspondant à l'index envoyé dans la requête
+// curl localhost:8080/?index=0 -H 'secret: 7cTcjNyVJyudBqfE'
 app.get("/", (req, res) => {
   const paramsGet = req.query; // {index: "3"}
-  console.log({ paramsGet });
-  const text = `L'index reçu est : ${paramsGet.index}\n`;
   
-  // ici la variable paramsGet contient un clé index avec la valeur enrée dans la commande curl
-  // p.ex pour curl localhost:8080/?index=3 la variable params get contiendra {index: "3"}
-  // paramsGet.index retournera donc "3"
-  // Dans ce cas faire data.items[paramsGet.index] revient a faire data.items[3]
-  res.send(data.items[paramsGet.index]); // On répond à la requête avec l'item correspondant à l'index envoyé dans la requête
+   mongo.get(paramsGet.index, (item) => { res.send(item); }) // Renvoi l'item n°X
+  
 });
 
 // Lorsqu'on reçoit une requête POST
-// Exemple: curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Mon titre"}'
+// Exemple: curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Mon titre", "content": "mon contenu"}'
+// Exemple: curl -X POST -H "Content-Type: application/json" localhost:8080 -d '{"title":"Super titre3", "content": "super contenu3"}' -H 'secret: 7cTcjNyVJyudBqfE'
 // TODO: Sauvegarder l'item reçu dans le tableau des items
 app.post("/", (req, res) => {
 	const paramsPost = req.body; // {title: "Mon titre"}
 
-	// On définit une variable nouvelArticle avec un contenu en json
-	// paramsPost.title contient la valeur de "title" envoyé en Post via la commande curl entrer dans le terminal
 	const nouvelArticle = {
 		title: paramsPost.title,
+		content: paramsPost.content,
 	};
 	
-	// On ajoute un nouvel element au tableau items de la variable data
-	data.items.push(nouvelArticle);
-	
-	res.json(paramsPost);
+	mongo.add( nouvelArticle, (isOkay) => { console.log(isOkay ? 'Ajouté !' : 'Erreur !') })
+
 });
 
 // Lorsqu'on reçoit une requête DELETE
 // Exemple: curl -X DELETE localhost:8080/6
-// Si autentification par secret partage est activé: ajouter  -H 'secret: 7cTcjNyVJyudBqfE
-
 // TODO: Supprimer l'item correspondant à l'index envoyé en paramètre d'URL
+// Exemple: curl -X DELETE localhost:8080/4 -H 'secret: 7cTcjNyVJyudBqfE'
 app.delete("/:number", (req, res) => {
 	const paramsURL = req.params; //  {number: 6}
 	console.log({ paramsURL });
 	// Supprimer un élément d'un tableau
-	// delete data.items[paramsURL.number]; // Pas très propre car laisse un emplacement vide
-	
-	// Ici paramsUrl.number contient la valeur ajouter a la commande curl après le / localhost:8080/<LaValeurIndiquéIci>
-	// la fonction filter prend deux paramètre, le premier est l'élément du tableau et la deuxième est son index
-	// Cette fonction va donc parcourir tout le tableau et comparer chaque index a la valeur contenu dans la variable paramsURL.number
-	// Il garde l'élément si son index n'est pas égale a la valeur passée dans l'url indiqué dans la commande curl
-	data.items = data.items.filter((item, index) => index !== parseInt(paramsURL.number)); // Propre mais plus compliqué à comprendre
-	console.log(data.items)
 
+	mongo.remove(parseInt(paramsURL.number), (isOkay) => { console.log(isOkay ? 'Supprimé !': 'Erreur !')});
 
 	
 	res.json(paramsURL);
@@ -135,23 +108,28 @@ app.delete("/:number", (req, res) => {
 
 // Lorsqu'on reçoit une requête PUT
 // Exemple: curl -X PUT -H "Content-Type: application/json" localhost:8080/?index=2 -d '{"newTitle":"Mon nouveau titre"}'
-// Si autentification par secret partage est activé: ajouter  -H 'secret: 7cTcjNyVJyudBqfE
-
 // TODO: Modifier l'item correspondant à l'index reçu en paramètre GET avec les données reçues en paramètre POST
+// Exemple: curl -X PUT -H "Content-Type: application/json" localhost:8080/?index=0 -d '{"newTitle":"Mon nouveau titre", "newContent": "mon nouveau contenu"}' -H 'secret: 7cTcjNyVJyudBqfE'
+
 app.put("/", (req, res) => {
 	// La variable paramsGet récupère les paramètre GET inséré après l'url lors de la commande curl
 	// p.ex: localhost:8080/?index=2 --> paramsGet contiendra {index: 2}
 	const paramsGet = req.query; // {index: 2}
-	
 	// La variable paramsPost récupère les paramètres POST inséré lors de la commande curl
 	// p.ex: -d '{"newTitle":"Mon nouveau titre"}' --> paramsPost contiendra {newTitle: "Mon nouveau titre"}
-	const paramsPost = req.body; // {newTitle: "Mon nouveau titre"}
+	const paramsPost = req.body; // {newTitle: "Mon nouveau titre", newContent: "Nouveau contenu"}
 	
 	// Ici on modifie la valeur de title pour l'element du tableau à l'index défini dans la commande curl
 	// Pour la commande suivante: curl -X PUT -H "Content-Type: application/json" localhost:8080/?index=2 -d '{"newTitle":"Mon nouveau titre"}'
 	// Cela equivaut à faire ca-> data.items[2].title="Mon nouveau titre";
-	data.items[paramsGet.index].title=paramsPost.newTitle;
-  
+	
+	const updateItem = {
+		title: paramsPost.newTitle,
+		content: paramsPost.newContent,
+	};
+	
+	mongo.update(paramsGet.index, updateItem, (isOkay) => { console.log(isOkay ? 'Mis à jour !': 'Erreur !')});
+
 	res.json(paramsPost);
 
 });
